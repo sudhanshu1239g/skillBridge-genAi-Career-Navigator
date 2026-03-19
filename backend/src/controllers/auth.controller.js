@@ -6,7 +6,6 @@ const tokenBlacklistModel = require('../models/blacklist.model')
  * 
  * @name registerUserController
  * @description Registers a new user in the system.
- * @returns 
  */
 async function registerUserController(req, res) {
     try {
@@ -49,7 +48,6 @@ async function registerUserController(req, res) {
  * 
  * @name loginUserController
  * @description Authenticates a user and provides a JWT token for session management.
- * @returns 
  */
 async function loginUserController(req, res) {
     try {
@@ -83,7 +81,6 @@ async function loginUserController(req, res) {
  * 
  * @name logoutUserController
  * @description Logs out a user by clearing the authentication token and blacklisting it.
- * @returns
  */
 async function logoutUserController(req, res) {
     try {
@@ -99,7 +96,11 @@ async function logoutUserController(req, res) {
     }
     
 }
-
+/**
+ * 
+ * @name getMeController
+ * @description gets the data of user from database
+ */
 async function getMeController(req, res) {
     try {
         const user = await userModel.findOne({ email: req.user.email })

@@ -135,28 +135,6 @@ To keep outputs production-friendly despite LLM variability:
 
 This ensures the platform remains usable even under imperfect model responses.
 
-## API Reference
-Base URL: `http://localhost:8000`
-
-### Authentication Routes
-- `POST /api/auth/register`  
-  Register a new user
-- `POST /api/auth/login`  
-  Login with email/password
-- `GET /api/auth/logout`  
-  Logout and blacklist token
-- `GET /api/auth/get-me`  
-  Get current authenticated user profile
-
-### Interview Intelligence Routes
-- `POST /api/interview/`  
-  Generate and save a new report (`multipart/form-data`, includes resume)
-- `GET /api/interview/report/:interviewId`  
-  Fetch one report
-- `GET /api/interview/`  
-  Fetch all reports for logged-in user
-- `POST /api/interview/resume/pdf/:interviewReportId`  
-  Generate and download tailored resume PDF
 
 ## Data Model Snapshot
 ### Interview Report (core fields)
@@ -181,7 +159,7 @@ Base URL: `http://localhost:8000`
 
 ### 1) Clone repository
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/sudhanshu1239g/paloAlto-Project.git
 cd genAiResumeProject
 ```
 
@@ -191,23 +169,14 @@ cd backend && npm install
 cd ../frontend && npm install
 ```
 
-### 3) Configure environment variables
-Create `backend/.env`:
-
-```env
-MONGO_URi=your_mongodb_connection_string
-JWT_SECRET=your_strong_jwt_secret
-GOOGLE_GENAI_API_KEY=your_google_genai_api_key
-```
-
-### 4) Start backend
+### 3) Start backend
 ```bash
 cd backend
 npm run dev
 ```
 Backend runs on `http://localhost:8000`
 
-### 5) Start frontend
+### 4) Start frontend
 ```bash
 cd frontend
 npm run dev

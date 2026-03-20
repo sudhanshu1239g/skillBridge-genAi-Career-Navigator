@@ -26,15 +26,37 @@ async function generateInterViewReportController(req, res) {
             selfDescription,
             jobDescription
         });
+
+        const calculateRealScore = (resume, jd) => {
+            const resumeLower = (resume || "").toLowerCase();
+            const jdLower = (jd || "").toLowerCase();
+
+            // Weights: Hard skills are worth more than tools
+            const weights = {
+                core: { list: ['react', 'node', 'express', 'mongodb', 'typescript', 'nextjs', 'javascript', 'golang', 'cpp', 'python'], val: 6 },
+                tools: { list: ['docker', 'aws', 'git', 'kubernetes', 'jenkins', 'sql', 'rest', 'graphql'], val: 3 },
+            };
+            
+            let score = 50; // Starting base score for a valid profile
+            
+            Object.values(weights).forEach(group => {
+                group.list.forEach(skill => {
+                    if (resumeLower.includes(skill) && jdLower.includes(skill)) {
+                        score += group.val;
+                    }
+                });
+            });
+            return Math.min(score, 98); // Realistic cap
+        };
         const interviewReport = await interviewReportModel.create({
             user: req.user.id,
-            title: (title && title !== "undefined") ? title : "New Interview Analysis",
+            title: (title && title !== "undefined") ? title : "New Analysis",
             resume: extractedText,
             selfDescription,
             jobDescription,
 
     // 1. Calculate a fallback matchScore if the AI forgets it
-            matchScore: interViewReportByAi.matchScore || interViewReportByAi.match_score || 75,
+            matchScore: interViewReportByAi.matchScore || interViewReportByAi.match_score || calculateRealScore(extractedText, jobDescription),
 
             technicalQuestions: (interViewReportByAi.technicalQuestions || []).map(q => ({
                 question: q.question || "Technical Question",

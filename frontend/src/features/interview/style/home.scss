@@ -1,207 +1,248 @@
 @use "sass:color";
 
-// ── Variables ────────────────────────────────────────────────────────────────
+// ── 1. Variables ─────────────────────────────────────────────────────────────
 $bg-page:        #0d1117;
 $bg-card:        #161b22;
 $bg-panel:       #1c2230;
-$bg-input:       #1e2535;
-$border-color:   #2a3348;
-$text-primary:   #e6edf3;
-$text-muted:     #7d8590;
-$accent:         #ff2d78;
-$accent-alt:     #ff6b9d;
-$badge-required: #ff2d78;
-$badge-best:     #ff2d78;
-$info-bg:        #1b2a4a;
-$info-border:    #2d4a7a;
-$font-stack:     system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$bg-input:       #0d1117;
+$border-color:   #30363d;
+$text-primary:   #f0f6fc;
+$text-muted:     #8b949e;
 
-// ── Page Shell ───────────────────────────────────────────────────────────────
+$accent:         #ff2d78; 
+$accent-hover:   #e02469;
+$accent-glow:    rgba(255, 45, 120, 0.3);
+
+$high-score:     #3fb950;
+$mid-score:      #d29922;
+$low-score:      #f85149;
+
+$font-stack:     'Inter', system-ui, -apple-system, sans-serif;
+
+// ── 2. Global Layout ─────────────────────────────────────────────────────────
 .home-page {
     width: 100%;
     min-height: 100vh;
     background-color: $bg-page;
+    background-image: 
+        radial-gradient(circle at 50% 0%, rgba($accent, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 0% 100%, rgba(88, 166, 255, 0.05) 0%, transparent 30%);
     color: $text-primary;
     font-family: $font-stack;
-
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 3rem 1.5rem;
-    gap: 2rem;
+    padding: 7rem 1.5rem 4rem; 
+    position: relative;
+    overflow-x: hidden;
 }
 
-// ── Page Header ──────────────────────────────────────────────────────────────
+// ── 3. Top Navigation ───────────────────────────────────────────────────────
+.home-top-bar, .top-nav {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 1.5rem 2rem;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+
+    .logo-section {
+        font-weight: 800;
+        font-size: 1.25rem;
+        letter-spacing: -0.5px;
+        color: $text-primary;
+        span { color: $accent; }
+    }
+}
+
+.logout-btn {
+    position: static !important; 
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid $border-color !important;
+    padding: 0.6rem 1.2rem !important;
+    border-radius: 0.75rem !important;
+    color: $text-muted !important;
+    font-size: 0.85rem !important;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    svg { stroke: $text-muted; transition: stroke 0.2s; }
+
+    &:hover {
+        background: rgba($accent, 0.1) !important;
+        border-color: $accent !important;
+        color: white !important;
+        svg { stroke: $accent; }
+    }
+}
+
+// ── 4. Page Header ───────────────────────────────────────────────────────────
 .page-header {
     text-align: center;
+    max-width: 800px;
+    margin-bottom: 2rem;
+    animation: fadeIn 0.8s ease-out;
 
     h1 {
-        font-size: 2.25rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-        color: $text-primary;
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        font-weight: 900;
+        margin-bottom: 1rem;
+        letter-spacing: -0.04em;
     }
 
-    p {
-        color: $text-muted;
-        font-size: 0.95rem;
-        max-width: 480px;
-        margin: 0 auto;
-        line-height: 1.6;
-    }
+    p { color: $text-muted; font-size: 1.1rem; line-height: 1.6; }
 
     .highlight {
         color: $accent;
+        position: relative;
+        &::after {
+            content: '';
+            position: absolute;
+            left: 0; bottom: 5px;
+            width: 100%; height: 8px;
+            background: rgba($accent, 0.2);
+            z-index: -1; border-radius: 2px;
+        }
     }
 }
 
-// ── Main Card ─────────────────────────────────────────────────────────────────
+// ── 5. Main Interview Card ────────────────────────────────────────────────────
 .interview-card {
     width: 100%;
-    max-width: 900px;
+    max-width: 1050px;
     background-color: $bg-card;
     border: 1px solid $border-color;
-    border-radius: 1rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
 
     &__body {
         display: flex;
-        min-height: 520px;
+        min-height: 580px; // Slightly taller to allow for growth
+        @media (max-width: 850px) { flex-direction: column; }
     }
 
     &__footer {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 1rem 1.5rem;
+        padding: 1.25rem 2.5rem;
+        background-color: rgba(0, 0, 0, 0.2);
         border-top: 1px solid $border-color;
 
         .footer-info {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: $text-muted;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            &::before {
+                content: ''; width: 8px; height: 8px;
+                background: $accent; border-radius: 50%;
+                box-shadow: 0 0 10px $accent;
+            }
         }
     }
 }
 
-// ── Panels ────────────────────────────────────────────────────────────────────
+// ── 6. Panels (The Growth Fix) ────────────────────────────────────────────────
 .panel-divider {
     width: 1px;
-    background-color: $border-color;
+    background: linear-gradient(to bottom, transparent, $border-color, transparent);
     flex-shrink: 0;
 }
 
 .panel {
     flex: 1;
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1.5rem;
+    flex-direction: column; // Critical for textarea growth
+    gap: 1.5rem;
+    padding: 2.5rem;
+    min-width: 0;
 
     &__header {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 0.25rem;
-
-        h2 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: $text-primary;
-            flex: 1;
-        }
+        gap: 0.75rem;
+        flex-shrink: 0; // Header stays at the top
+        h2 { font-size: 1.15rem; font-weight: 700; color: white; margin: 0; flex: 1; }
     }
 
     &__icon {
-        display: flex;
-        align-items: center;
         color: $accent;
+        background: rgba($accent, 0.1);
+        padding: 8px;
+        border-radius: 8px;
+        display: flex;
     }
 
     &__textarea {
-        flex: 1;
-        width: 100%;
+        width: 100% !important;
         background-color: $bg-input;
         border: 1px solid $border-color;
-        border-radius: 0.5rem;
-        padding: 0.75rem 1rem;
-        color: $text-primary;
-        font-family: $font-stack;
-        font-size: 0.875rem;
+        border-radius: 1rem;
+        padding: 1.25rem;
+        color: white;
+        font-size: 0.95rem;
+        line-height: 1.6;
         resize: none;
         outline: none;
-        transition: border-color 0.2s;
-        line-height: 1.5;
-
-        &::placeholder {
-            color: $text-muted;
-        }
+        transition: all 0.3s;
+        
+        // This is the fix: make it fill the remaining space in the panel
+        flex: 1; 
 
         &:focus {
             border-color: $accent;
+            box-shadow: 0 0 0 4px rgba($accent, 0.1);
         }
 
-        &--short {
-            flex: unset;
-            height: 96px;
+        &--short { 
+            flex: none !important; // Don't grow the self-description
+            height: 120px !important; 
         }
     }
 
     &--left {
         position: relative;
-
         .char-counter {
             position: absolute;
-            bottom: 2.25rem;
-            right: 2rem;
-            font-size: 0.75rem;
+            bottom: 3.25rem;
+            right: 3.25rem;
+            font-size: 0.7rem;
             color: $text-muted;
+            background: $bg-panel;
+            padding: 2px 8px;
+            border-radius: 6px;
+            border: 1px solid $border-color;
+            z-index: 5;
         }
     }
-
-    &--right {
-        gap: 0.75rem;
-    }
 }
 
-// ── Badges ────────────────────────────────────────────────────────────────────
-.badge {
-    font-size: 0.7rem;
-    font-weight: 600;
-    padding: 0.15rem 0.5rem;
-    border-radius: 0.3rem;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-
-    &--required {
-        background-color: rgba($badge-required, 0.15);
-        color: $badge-required;
-        border: 1px solid rgba($badge-required, 0.3);
-    }
-
-    &--best {
-        background-color: rgba($badge-best, 0.15);
-        color: $badge-best;
-        border: 1px solid rgba($badge-best, 0.3);
-    }
+// ── 7. Profile Specific Styles ──────────────────────────────────────────
+.self-description {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.75rem;
+    flex-shrink: 0;
 }
 
-// ── Section Label ─────────────────────────────────────────────────────────────
 .section-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    font-weight: 500;
+    font-size: 0.9rem;
+    font-weight: 600;
     color: $text-primary;
-    margin-bottom: 0.25rem;
-}
-
-// ── Dropzone ──────────────────────────────────────────────────────────────────
-.upload-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
 }
 
 .dropzone {
@@ -209,167 +250,114 @@ $font-stack:     system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Robot
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.35rem;
-    padding: 1.5rem 1rem;
-    background-color: $bg-input;
+    padding: 2rem 1rem;
+    background-color: rgba($bg-input, 0.4);
     border: 2px dashed $border-color;
-    border-radius: 0.6rem;
+    border-radius: 1.25rem;
     cursor: pointer;
-    transition: border-color 0.2s, background-color 0.2s;
+    transition: all 0.3s;
 
     &:hover {
         border-color: $accent;
         background-color: rgba($accent, 0.05);
+        transform: translateY(-2px);
     }
 
-    &__icon {
-        color: $accent;
-        margin-bottom: 0.25rem;
-    }
-
-    &__title {
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: $text-primary;
-        margin: 0;
-    }
-
-    &__subtitle {
-        font-size: 0.75rem;
-        color: $text-muted;
-        margin: 0;
-    }
+    &__icon { color: $accent; margin-bottom: 0.5rem; }
+    &__title { font-weight: 700; font-size: 0.95rem; margin: 0; }
+    &__subtitle { font-size: 0.8rem; color: $text-muted; margin: 0; }
 }
 
-// ── OR Divider ────────────────────────────────────────────────────────────────
+.badge {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2rem;
+    letter-spacing: 0.05em;
+    &--required { background: rgba($accent, 0.1); color: #ff7b72; border: 1px solid rgba($accent, 0.2); }
+    &--best { background: rgba($accent, 0.1); color: $accent; border: 1px solid rgba($accent, 0.2); }
+}
+
 .or-divider {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1.5rem;
     color: $text-muted;
     font-size: 0.75rem;
-
-    &::before,
-    &::after {
-        content: '';
-        flex: 1;
-        height: 1px;
-        background-color: $border-color;
-    }
-
-    span {
-        white-space: nowrap;
-    }
+    margin: 0.5rem 0;
+    &::before, &::after { content: ''; flex: 1; height: 1px; background: $border-color; }
 }
 
-// ── Self Description ──────────────────────────────────────────────────────────
-.self-description {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-// ── Info Box ──────────────────────────────────────────────────────────────────
 .info-box {
     display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-    padding: 0.75rem 1rem;
-    background-color: $info-bg;
-    border: 1px solid $info-border;
-    border-radius: 0.5rem;
-
-    &__icon {
-        flex-shrink: 0;
-        color: #4a90e2;
-        margin-top: 1px;
-    }
-
-    p {
-        margin: 0;
-        font-size: 0.8rem;
-        color: #8ab4f8;
-        line-height: 1.5;
-
-        strong {
-            color: $text-primary;
-        }
-    }
+    gap: 0.75rem;
+    padding: 1rem;
+    background: rgba(56, 139, 253, 0.08);
+    border: 1px solid rgba(56, 139, 253, 0.2);
+    border-radius: 1rem;
+    margin-top: auto; // Pushes info box to bottom of the profile panel
+    p { font-size: 0.8rem; color: #79c0ff; margin: 0; line-height: 1.5; }
 }
 
-// ── Generate Button ───────────────────────────────────────────────────────────
-.generate-btn {
+// ── 8. Buttons ────────────────────────────────────────────────────────────
+.generate-btn:not([title='Logout']) {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, $accent 0%, color.adjust($accent, $lightness: -10%, $space: hsl) 100%);
-    color: #fff;
-    font-size: 0.9rem;
-    font-weight: 600;
+    gap: 0.75rem;
+    padding: 0.85rem 2rem;
+    background: linear-gradient(135deg, $accent 0%, $accent-hover 100%);
+    color: white;
+    font-weight: 700;
     border: none;
-    border-radius: 0.5rem;
+    border-radius: 0.85rem;
     cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
-    font-family: $font-stack;
+    box-shadow: 0 8px 15px rgba($accent, 0.2);
+    transition: all 0.3s;
 
     &:hover {
-        opacity: 0.9;
-    }
-
-    &:active {
-        transform: scale(0.98);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba($accent, 0.4);
     }
 }
 
-.recent-reports{
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+// ── 9. Recent Reports ─────────────────────────────────────────────────────────
+.recent-reports {
     width: 100%;
-    max-width: 900px;
+    max-width: 1050px;
+    h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 2rem; }
+}
 
-    .reports-list{
-        display: flex;
-        gap: 0.75rem;
-        flex-wrap: wrap;
+.reports-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 1.25rem;
+    list-style: none; padding: 0;
+}
 
-        .report-item{
-            background-color: $bg-card;
-            border: 1px solid $border-color;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            cursor: pointer;
-            flex-shrink: 0;
-
-            .match-score {
-                font-size: 0.8rem;
-                font-weight: 600;
-                color: $accent;
-                align-items: flex-start;
-            }
-        }
+.report-item {
+    background: $bg-card;
+    border: 1px solid $border-color;
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    &:hover {
+        border-color: $accent;
+        background: lighten($bg-card, 3%);
+        transform: translateY(-5px);
+    }
+    h3 { margin: 0 0 0.5rem; font-size: 1.15rem; }
+    .report-meta { font-size: 0.85rem; color: $text-muted; }
+    .match-score {
+        font-weight: 800;
+        margin-top: 1rem;
+        &.score--high { color: $high-score; }
+        &.score--mid { color: $mid-score; }
+        &.score--low { color: $low-score; }
     }
 }
 
-
-// ── Page Footer ───────────────────────────────────────────────────────────────
-.page-footer {
-    display: flex;
-    gap: 1.5rem;
-
-    a {
-        font-size: 0.8rem;
-        color: $text-muted;
-        text-decoration: none;
-        transition: color 0.2s;
-
-        &:hover {
-            color: $text-primary;
-        }
-    }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }

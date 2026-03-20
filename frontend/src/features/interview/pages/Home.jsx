@@ -5,15 +5,24 @@ import { useNavigate } from 'react-router'
 
 const Home = () => {
 
-    const { loading, generateReport,reports } = useInterview()
-    const [ jobDescription, setJobDescription ] = useState("")
-    const [ selfDescription, setSelfDescription ] = useState("")
+    const { loading, generateReport, reports } = useInterview()
+    const [jobDescription, setJobDescription] = useState("")
+    const [selfDescription, setSelfDescription] = useState("")
     const resumeInputRef = useRef()
 
     const navigate = useNavigate()
+    // --- LOGOUT LOGIC ---
+    const handleLogout = () => {
+        // 1. Clear the token and user data
+        localStorage.removeItem('token');
+        localStorage.removeItem('user'); // if you store user info separately
+
+        // 2. Redirect to login
+        navigate('/login');
+    }
 
     const handleGenerateReport = async () => {
-        const resumeFile = resumeInputRef.current.files[ 0 ]
+        const resumeFile = resumeInputRef.current.files[0]
         const data = await generateReport({ jobDescription, selfDescription, resumeFile })
         navigate(`/interview/${data._id}`)
     }
@@ -28,10 +37,20 @@ const Home = () => {
 
     return (
         <div className='home-page'>
+            <div className='home-top-bar'>
+                <div className='logo-section'>
+                    Skill<span>Bridge</span>
+                </div>
+                <button onClick={handleLogout} className='logout-btn' title='Logout'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
+                    Logout
+                </button>
+            </div>
 
             {/* Page Header */}
             <header className='page-header'>
-                <h1>Create Your Custom <span className='highlight'>Interview Plan</span></h1>
+                <h1>Check your skills and <span className='highlight'>Bridge it</span></h1>
+
                 <p>Let our AI analyze the job requirements and your unique profile to build a winning strategy.</p>
             </header>
 

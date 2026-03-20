@@ -21,7 +21,7 @@ const technicalQuestionSchema = new mongoose.Schema({
 const behavioralQuestionSchema = new mongoose.Schema({
     question: {
         type: String,
-        required: [ true, "Behavioral question is required" ]
+        required: [ true, "Technical question is required" ]
     },
     intention: {
         type: String,
@@ -88,10 +88,10 @@ const interviewReportSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "users"
     },
- /*   title: {
+    title: {
         type: String,
-        required: [ true, "Job title is required" ]
-    }*/
+        default: "New Interview Report"
+    }
 }, {
     timestamps: true
 })
@@ -99,4 +99,4 @@ const interviewReportSchema = new mongoose.Schema({
 
 const interviewReportModel = mongoose.model("InterviewReport", interviewReportSchema);
 
-module.exports = interviewReportModel;
+module.exports = interviewReportModel;  

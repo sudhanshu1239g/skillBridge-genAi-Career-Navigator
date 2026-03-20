@@ -1,117 +1,144 @@
-const userModel = require('../models/user.model')
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-const tokenBlacklistModel = require('../models/blacklist.model')
+const userModel = require("../models/user.model")
+const bcrypt = require("bcryptjs")
+const jwt = require("jsonwebtoken")
+const tokenBlacklistModel = require("../models/blacklist.model")
+
 /**
- * 
  * @name registerUserController
- * @description Registers a new user in the system.
+ * @description register a new user, expects username, email and password in the request body
+ * @access Public
  */
 async function registerUserController(req, res) {
-    try {
-        const { username, email, password } = req.body
-        
-        if(!username || !email || !password) {
-            return res.status(400).json({ message: 'All fields are required' })
-        }
 
-        const existingUser = await userModel.findOne({ email })
-        if(existingUser) {
-            return res.status(400).json({ message: 'Email already registered' })
-        }
+    const { username, email, password } = req.body
 
-        const hashedPassword = await bcrypt.hash(password, 10)
-
-        
-
-        const newUser = await userModel.create({
-            username,
-            email,
-            password: hashedPassword
+    if (!username || !email || !password) {
+        return res.status(400).json({
+            message: "Please provide username, email and password"
         })
-        const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' })
-
-        res.cookie('token', token)
-        res.status(201).json({ message: 'User registered successfully', user: newUser })
-        
-
-        
-
-        res.status(201).json({ message: 'User registered successfully' })
-    } catch (error) {
-        console.error('Error registering user:', error)
-        res.status(500).json({ message: 'Internal server error' })
     }
 
+    const isUserAlreadyExists = await userModel.findOne({
+        $or: [ { username }, { email } ]
+    })
+
+    if (isUserAlreadyExists) {
+        return res.status(400).json({
+            message: "Account already exists with this email address or username"
+        })
+    }
+
+    const hash = await bcrypt.hash(password, 10)
+
+    const user = await userModel.create({
+        username,
+        email,
+        password: hash
+    })
+
+    const token = jwt.sign(
+        { id: user._id, username: user.username },
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" }
+    )
+
+    res.cookie("token", token)
+
+
+    res.status(201).json({
+        message: "User registered successfully",
+        user: {
+            id: user._id,
+            username: user.username,
+            email: user.email
+        }
+    })
+
 }
+
+
 /**
- * 
  * @name loginUserController
- * @description Authenticates a user and provides a JWT token for session management.
+ * @description login a user, expects email and password in the request body
+ * @access Public
  */
 async function loginUserController(req, res) {
-    try {
-        const { email, password } = req.body
-        
-        if(!email || !password) {
-            return res.status(400).json({ message: 'All fields are required' })
-        }
 
-        const user = await userModel.findOne({ email })
-        if(!user) {
-            return res.status(400).json({ message: 'Invalid email or password' })
-        }
+    const { email, password } = req.body
 
-        const isPasswordValid = await bcrypt.compare(password, user.password)
-        if(!isPasswordValid) {
-            return res.status(400).json({ message: 'Invalid email or password' })
-        }
+    const user = await userModel.findOne({ email })
 
-        const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' })
-
-        res.cookie('token', token)
-        res.status(200).json({ message: 'Login successful', user })
-    } catch (error) {
-        console.error('Error logging in user:', error)
-        res.status(500).json({ message: 'Internal server error' })
+    if (!user) {
+        return res.status(400).json({
+            message: "Invalid email or password"
+        })
     }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password)
+
+    if (!isPasswordValid) {
+        return res.status(400).json({
+            message: "Invalid email or password"
+        })
+    }
+
+    const token = jwt.sign(
+        { id: user._id, username: user.username },
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" }
+    )
+
+    res.cookie("token", token)
+    res.status(200).json({
+        message: "User loggedIn successfully.",
+        user: {
+            id: user._id,
+            username: user.username,
+            email: user.email
+        }
+    })
 }
 
+
 /**
- * 
  * @name logoutUserController
- * @description Logs out a user by clearing the authentication token and blacklisting it.
+ * @description clear token from user cookie and add the token in blacklist
+ * @access public
  */
 async function logoutUserController(req, res) {
-    try {
-        const token = req.cookies.token
-        if(token) {
-            await tokenBlacklistModel.create({ token })   
-        }
-        res.clearCookie('token')
-        res.status(200).json({ message: 'Logout successful' })
-    } catch (error) {
-        console.error('Error logging out user:', error)
-        res.status(500).json({ message: 'Internal server error' })
+    const token = req.cookies.token
+
+    if (token) {
+        await tokenBlacklistModel.create({ token })
     }
-    
+
+    res.clearCookie("token")
+
+    res.status(200).json({
+        message: "User logged out successfully"
+    })
 }
+
 /**
- * 
  * @name getMeController
- * @description gets the data of user from database
+ * @description get the current logged in user details.
+ * @access private
  */
 async function getMeController(req, res) {
-    try {
-        const user = await userModel.findOne({ email: req.user.email })
-        if(!user) {
-            return res.status(404).json({ message: 'User not found' })
+
+    const user = await userModel.findById(req.user.id)
+
+
+
+    res.status(200).json({
+        message: "User details fetched successfully",
+        user: {
+            id: user._id,
+            username: user.username,
+            email: user.email
         }
-        res.status(200).json({ user })
-    } catch (error) {
-        console.error('Error fetching user data:', error)
-        res.status(500).json({ message: 'Internal server error' })
-    }
+    })
+
 }
 
 

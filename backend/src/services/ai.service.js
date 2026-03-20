@@ -1,7 +1,7 @@
 const { GoogleGenAI } = require("@google/genai")
 const { z } = require("zod")
 const { zodToJsonSchema } = require("zod-to-json-schema")
-//const puppeteer = require("puppeteer")
+const puppeteer = require("puppeteer")
 
 const ai = new GoogleGenAI({
     apiKey: process.env.GOOGLE_GENAI_API_KEY
@@ -33,26 +33,48 @@ const interviewReportSchema = z.object({
 })
 
 async function generateInterviewReport({ resume, selfDescription, jobDescription }) {
+    const prompt = `
+        You are a Technical Interviewer. Analyze the following:
+        Resume: ${resume}
+        Self-Description: ${selfDescription}
+        Job Description: ${jobDescription}
 
+        CRITICAL: You must return a JSON object that matches the provided schema EXACTLY.
+        Specifically, ensure you provide:
+        - technicalQuestions (with intention and answer)
+        - behavioralQuestions (with intention and answer)
+        - skillGaps (with skill and severity)
+        - preparationPlan (day-wise tasks)
+    `;
 
-    const prompt = `Generate an interview report for a candidate with the following details:
-                        Resume: ${resume}
-                        Self Description: ${selfDescription}
-                        Job Description: ${jobDescription}
-`
-
-    const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: prompt,
-        config: {
+    try {
+        const response = await ai.models.generateContent({
+            model: "gemini-3-flash-preview", 
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+            generationConfig: {
             responseMimeType: "application/json",
             responseSchema: zodToJsonSchema(interviewReportSchema),
-        }
-    })
+            }
+        });
 
-    return JSON.parse(response.text)
+        let aiText = response.text; 
+        if (!aiText) throw new Error("AI returned no text");
 
+    // --- THE CLEANER LOGIC ---
+    // This regex removes ```json at the start and ``` at the end
+        const cleanJsonString = aiText.replace(/^```json\n?|```$/g, '').trim();
 
+    // Now parse the cleaned string
+        const parsedResult = JSON.parse(cleanJsonString);
+    
+        console.log("AI DATA KEYS:", Object.keys(parsedResult));
+        console.log("RAW AI DATA:", JSON.stringify(parsedResult, null, 2));
+        return parsedResult;
+
+    } catch (error) {
+        console.error("AI Service Error:", error);
+        throw error;
+    }
 }
 
 

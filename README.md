@@ -101,7 +101,7 @@ This keeps the experience stable even when model outputs vary.
 ## Local Setup
 ### 1) Clone and install
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/sudhanshu1239g/paloAlto-Project.git
 cd genAiResumeProject
 
 cd backend && npm install

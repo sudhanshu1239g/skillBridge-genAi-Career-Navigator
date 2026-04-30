@@ -6,7 +6,7 @@ const app = express()
 
 
 app.use(cors({
-    origin: "https://skill-bridge-gen-ai-career-navigator-fnko-2zq75i1vr.vercel.app",
+    origin: "skill-bridge-gen-ai-career-navigato-indol.vercel.app",
     credentials: true
 }))
 app.use(express.json())

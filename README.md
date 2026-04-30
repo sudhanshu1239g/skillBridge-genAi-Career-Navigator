@@ -2,6 +2,12 @@
 
 An AI-powered career intelligence platform that helps learners and early-career professionals close the gap between current skills and real-world job requirements.
 
+## DemoLink Presentation:
+https://youtu.be/P5clF4YFBxw?si=nJuA1ajYnJTvQYMg
+
+## Design Documentation:
+https://drive.google.com/file/d/1dffHs2aGEFbqOXCn1VU3J-buPhg2Lku2/view?usp=sharing
+
 ## Overview
 Skill-Bridge Career Navigator transforms unstructured profile data (resume PDF and self-description) into a personalized career action plan for a target role.  
 Instead of generic guidance, users receive role-specific insights:

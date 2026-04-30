@@ -67,8 +67,8 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
     // Now parse the cleaned string
         const parsedResult = JSON.parse(cleanJsonString);
     
-        console.log("AI DATA KEYS:", Object.keys(parsedResult));
-        console.log("RAW AI DATA:", JSON.stringify(parsedResult, null, 2));
+        //console.log("AI DATA KEYS:", Object.keys(parsedResult));
+        //console.log("RAW AI DATA:", JSON.stringify(parsedResult, null, 2));
         return parsedResult;
 
     } catch (error) {

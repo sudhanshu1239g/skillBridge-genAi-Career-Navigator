@@ -183,6 +183,64 @@ a {
     }
 }
 
+.loading-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2rem;
+    font-family: 'Inter', sans-serif;
+
+    background: linear-gradient(-45deg, #0f0f0f, #1a1a2e, #16213e, #0f3460);
+    background-size: 400% 400%;
+    animation: gradientMove 12s ease infinite;
+
+    h1 {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 1.2rem;
+        animation: fadePulse 1.5s infinite;
+    }
+
+    &::after {
+        content: "";
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 4px solid rgba(255, 255, 255, 0.1);
+        border-top: 4px solid #e1034d;
+        animation: spin 1s linear infinite;
+    }
+}
+
+/* ================= ANIMATIONS ================= */
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadePulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes floatIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* ================= ANIMATIONS ================= */
 
 @keyframes gradientMove {

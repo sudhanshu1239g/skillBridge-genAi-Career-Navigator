@@ -7,7 +7,7 @@ const app = express()
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "https://skill-bridge-gen-ai-career-navigator-fnko-2zq75i1vr.vercel.app",
     credentials: true
 }))
 

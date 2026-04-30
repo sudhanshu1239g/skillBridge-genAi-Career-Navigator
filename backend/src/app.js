@@ -4,13 +4,13 @@ const cors = require("cors")
 
 const app = express()
 
-app.use(express.json())
-app.use(cookieParser())
+
 app.use(cors({
     origin: "https://skill-bridge-gen-ai-career-navigator-fnko-2zq75i1vr.vercel.app",
     credentials: true
 }))
-
+app.use(express.json())
+app.use(cookieParser())
 /* require all the routes here */
 const authRouter = require("./routes/auth.routes")
 const interviewRouter = require("./routes/interview.routes")

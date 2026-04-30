@@ -4,7 +4,5 @@ const connectToDB = require("./src/config/database")
 
 connectToDB()
 
+module.exports = app;
 
-app.listen(8000, () => {
-    console.log("Server is running on port 8000")
-})

@@ -1,4 +1,4 @@
-const pdfParse = require("pdf-parse")
+const pdfParse = require('pdf-parse-fork');
 const { generateInterviewReport, generateResumePdf } = require("../services/ai.service")
 const interviewReportModel = require("../models/interviewReport.model")
 
@@ -14,31 +14,29 @@ async function generateInterViewReportController(req, res) {
             return res.status(400).json({ message: "No PDF file uploaded" });
         }
 
-        // 1. Using your specific library's syntax
-        const pdfResult = await (new pdfParse.PDFParse(Uint8Array.from(req.file.buffer))).getText();
+        // 1. PDF Extraction
+        const pdfResult = await pdfParse(req.file.buffer);
         const extractedText = pdfResult.text;
-
         const { selfDescription, jobDescription, title } = req.body;
 
-        // 2. Pass the extracted text to the AI
+        // 2. AI Generation
         const interViewReportByAi = await generateInterviewReport({
             resume: extractedText,
             selfDescription,
             jobDescription
         });
 
+        // 3. YOUR SCORE LOGIC (Re-integrated)
         const calculateRealScore = (resume, jd) => {
             const resumeLower = (resume || "").toLowerCase();
             const jdLower = (jd || "").toLowerCase();
 
-            // Weights: Hard skills are worth more than tools
             const weights = {
                 core: { list: ['react', 'node', 'express', 'mongodb', 'typescript', 'nextjs', 'javascript', 'golang', 'cpp', 'python'], val: 6 },
                 tools: { list: ['docker', 'aws', 'git', 'kubernetes', 'jenkins', 'sql', 'rest', 'graphql'], val: 3 },
             };
             
-            let score = 50; // Starting base score for a valid profile
-            
+            let score = 50; 
             Object.values(weights).forEach(group => {
                 group.list.forEach(skill => {
                     if (resumeLower.includes(skill) && jdLower.includes(skill)) {
@@ -46,8 +44,13 @@ async function generateInterViewReportController(req, res) {
                     }
                 });
             });
-            return Math.min(score, 98); // Realistic cap
+            return Math.min(score, 98); 
         };
+
+        // 4. Safety Helper for Array Mapping
+        const ensureArray = (data) => Array.isArray(data) ? data : (data ? [data] : []);
+
+        // 5. Database Entry
         const interviewReport = await interviewReportModel.create({
             user: req.user.id,
             title: (title && title !== "undefined") ? title : "New Analysis",
@@ -55,42 +58,37 @@ async function generateInterViewReportController(req, res) {
             selfDescription,
             jobDescription,
 
-    // 1. Calculate a fallback matchScore if the AI forgets it
+            // Priority: AI Score -> Your Custom Logic -> 70 Default
             matchScore: interViewReportByAi.matchScore || interViewReportByAi.match_score || calculateRealScore(extractedText, jobDescription),
 
-            technicalQuestions: (interViewReportByAi.technicalQuestions || []).map(q => ({
+            technicalQuestions: ensureArray(interViewReportByAi.technicalQuestions).map(q => ({
                 question: q.question || "Technical Question",
                 intention: q.intention || "Assess technical depth",
                 answer: q.answer || "No sample answer provided"
             })),
 
-            behavioralQuestions: (interViewReportByAi.behavioralQuestions || []).map(q => ({
+            behavioralQuestions: ensureArray(interViewReportByAi.behavioralQuestions).map(q => ({
                 question: q.question || "Behavioral Question",
                 intention: q.intention || "Assess soft skills",
                 answer: q.answer || "No sample answer provided"
             })),
 
-    // 2. Fix the Enum Error (High -> high)
-            skillGaps: (interViewReportByAi.skillGaps || []).map(gap => ({
+            skillGaps: ensureArray(interViewReportByAi.skillGaps).map(gap => ({
                 skill: gap.skill || "General Requirement",
                 severity: String(gap.severity || "medium").toLowerCase() 
             })),
 
-    // 3. Fix the "Focus" and "Tasks Array" Error
-            preparationPlan: (interViewReportByAi.preparationPlan || []).map(plan => ({
+            preparationPlan: ensureArray(interViewReportByAi.preparationPlan).map(plan => ({
                 day: plan.day || 1,
-        // Map AI 'task' to 'focus' if focus is missing
                 focus: plan.focus || plan.task || "Skill Reinforcement",
-        // Wrap the single AI 'task' string into an array [task]
                 tasks: Array.isArray(plan.tasks) ? plan.tasks : [plan.task || "Review core concepts"]
             }))
         });
 
-
-    res.status(201).json({
+        res.status(201).json({
             message: "Interview report generated successfully.",
-            interviewReport // <--- Using it here removes the warning!
-    });
+            interviewReport 
+        });
 
     } catch (error) {
         console.error("Controller Error:", error);

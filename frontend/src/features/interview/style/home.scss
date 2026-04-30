@@ -134,6 +134,7 @@ $font-stack:     'Inter', system-ui, -apple-system, sans-serif;
     }
 
     &__footer {
+        margin-top: 30px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -322,6 +323,7 @@ $font-stack:     'Inter', system-ui, -apple-system, sans-serif;
 
 // ── 9. Recent Reports ─────────────────────────────────────────────────────────
 .recent-reports {
+    margin-top: 50px;
     width: 100%;
     max-width: 1050px;
     h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 2rem; }
@@ -355,6 +357,112 @@ $font-stack:     'Inter', system-ui, -apple-system, sans-serif;
         &.score--mid { color: $mid-score; }
         &.score--low { color: $low-score; }
     }
+}
+.page-footer {
+    margin-top: 100px;
+  width: 100%;
+  padding: 16px 0;
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  position: relative;
+  bottom: 0;
+
+  a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+      opacity: 0.8;
+    }
+  }
+}
+.loading-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: linear-gradient(135deg, #0f172a, #020617);
+  color: #e2e8f0;
+  font-family: 'Inter', sans-serif;
+  text-align: center;
+  gap: 2rem;
+  overflow: hidden;
+
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+    animation: fadePulse 2s ease-in-out infinite;
+  }
+
+  // Spinner
+  &::before {
+    content: "";
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top: 4px solid #38bdf8;
+    animation: spin 1s linear infinite;
+  }
+
+  // Subtle glow ring behind spinner
+  &::after {
+    content: "";
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.2), transparent 70%);
+    filter: blur(20px);
+    animation: pulseGlow 2.5s ease-in-out infinite;
+  }
+}
+
+// Animations
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadePulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
 }
 
 @keyframes fadeIn {

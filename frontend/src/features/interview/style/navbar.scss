@@ -1,0 +1,75 @@
+$app-bg: #0d1117;
+$panel-bg: #161b22;
+$border-color: #30363d;
+$text: #f0f6fc;
+$muted: #8b949e;
+$accent: #ff2d78;
+
+.app-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: rgba(13, 17, 23, 0.92);
+  border-bottom: 1px solid $border-color;
+  backdrop-filter: blur(8px);
+}
+
+.app-navbar__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.app-navbar__logo {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: $text;
+
+  span {
+    color: $accent;
+  }
+}
+
+.app-navbar__links {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.app-navbar__link,
+.app-navbar__logout {
+  color: $muted;
+  border: 1px solid transparent;
+  background: transparent;
+  text-decoration: none;
+  padding: 0.45rem 0.8rem;
+  border-radius: 0.6rem;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.app-navbar__link.active,
+.app-navbar__link:hover,
+.app-navbar__logout:hover {
+  color: $text;
+  border-color: $border-color;
+  background: $panel-bg;
+}
+
+@media (max-width: 680px) {
+  .app-navbar__inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .app-navbar__links {
+    flex-wrap: wrap;
+  }
+}

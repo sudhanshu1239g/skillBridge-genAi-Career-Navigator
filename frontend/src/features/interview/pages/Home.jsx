@@ -5,26 +5,19 @@ import { useNavigate } from 'react-router'
 
 const Home = () => {
 
-    const { loading, generateReport, reports } = useInterview()
+    const { loading, generateReport } = useInterview()
     const [jobDescription, setJobDescription] = useState("")
     const [selfDescription, setSelfDescription] = useState("")
     const resumeInputRef = useRef()
 
     const navigate = useNavigate()
-    // --- LOGOUT LOGIC ---
-    const handleLogout = () => {
-        // 1. Clear the token and user data
-        localStorage.removeItem('token');
-        localStorage.removeItem('user'); // if you store user info separately
-
-        // 2. Redirect to login
-        navigate('/login');
-    }
 
     const handleGenerateReport = async () => {
         const resumeFile = resumeInputRef.current.files[0]
         const data = await generateReport({ jobDescription, selfDescription, resumeFile })
-        navigate(`/interview/${data._id}`)
+        if (data?._id) {
+            navigate(`/interview/${data._id}`)
+        }
     }
 
     if (loading) {
@@ -37,16 +30,6 @@ const Home = () => {
 
     return (
         <div className='home-page'>
-            <div className='home-top-bar'>
-                <div className='logo-section'>
-                    Skill<span>Bridge</span>
-                </div>
-                <button onClick={handleLogout} className='logout-btn' title='Logout'>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
-                    Logout
-                </button>
-            </div>
-
             {/* Page Header */}
             <header className='page-header'>
                 <h1>Check your skills and <span className='highlight'>Bridge it</span></h1>
@@ -141,22 +124,6 @@ const Home = () => {
                     </button>
                 </div>
             </div>
-
-            {/* Recent Reports List */}
-            {reports.length > 0 && (
-                <section className='recent-reports'>
-                    <h2>My Recent Interview Plans</h2>
-                    <ul className='reports-list'>
-                        {reports.map(report => (
-                            <li key={report._id} className='report-item' onClick={() => navigate(`/interview/${report._id}`)}>
-                                <h3>{report.title || 'Untitled Position'}</h3>
-                                <p className='report-meta'>Generated on {new Date(report.createdAt).toLocaleDateString()}</p>
-                                <p className={`match-score ${report.matchScore >= 80 ? 'score--high' : report.matchScore >= 60 ? 'score--mid' : 'score--low'}`}>Match Score: {report.matchScore}%</p>
-                            </li>
-                        ))}
-                    </ul>
-                </section>
-            )}
 
             {/* Page Footer */}
             <footer className='page-footer'>

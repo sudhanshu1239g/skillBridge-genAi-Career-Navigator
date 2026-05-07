@@ -188,6 +188,24 @@ $font-stack:     'Inter', system-ui, -apple-system, sans-serif;
         display: flex;
     }
 
+    &__input {
+        width: 100%;
+        background-color: $bg-input;
+        border: 1px solid $border-color;
+        border-radius: 1rem;
+        padding: 0.95rem 1.1rem;
+        color: white;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        outline: none;
+        transition: all 0.3s;
+
+        &:focus {
+            border-color: $accent;
+            box-shadow: 0 0 0 4px rgba($accent, 0.1);
+        }
+    }
+
     &__textarea {
         width: 100% !important;
         background-color: $bg-input;
@@ -238,6 +256,20 @@ $font-stack:     'Inter', system-ui, -apple-system, sans-serif;
     flex-direction: column !important;
     gap: 0.75rem;
     flex-shrink: 0;
+}
+
+.job-title-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex-shrink: 0;
+
+    .section-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+    }
 }
 
 .section-label {

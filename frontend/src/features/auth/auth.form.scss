@@ -8,7 +8,7 @@
     animation: gradientMove 12s ease infinite;
 
     // 🔥 reduce gap between left & right
-    padding: 0 2rem;
+    padding: 6rem 2rem 0;
     gap: 2rem;
 }
 
@@ -41,7 +41,7 @@
         line-height: 1.1;
 
         background: linear-gradient(135deg, #e1034d, #ff2e70, #38bdf8);
-        -webkit-background-clip: text;
+        background-clip: text;
         -webkit-text-fill-color: transparent;
     }
 
@@ -156,7 +156,7 @@ a {
 @media (max-width: 900px) {
     .auth-layout {
         flex-direction: column;
-        padding: 2rem 1.5rem;
+        padding: 6rem 1.5rem 2rem;
         gap: 2rem;
     }
 

@@ -19,7 +19,7 @@ export const router = createBrowserRouter([
         element: <Register />
     },
     {
-        element: <Protected><ProtectedLayout /></Protected>,
+        element: <ProtectedLayout />,
         children: [
             {
                 path: "/",
@@ -35,7 +35,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "/interview/:interviewId",
-                element: <Interview />
+                element: <Protected><Interview /></Protected>
             }
         ]
     }

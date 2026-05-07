@@ -5,7 +5,7 @@ import "../style/navbar.scss";
 
 const TopNavbar = () => {
     const navigate = useNavigate();
-    const { handleLogout } = useAuth();
+    const { user, handleLogout } = useAuth();
 
     const onLogout = async () => {
         await handleLogout();
@@ -23,7 +23,11 @@ const TopNavbar = () => {
                     <NavLink to="/" end className="app-navbar__link">Home</NavLink>
                     <NavLink to="/full-list" className="app-navbar__link">Full-List</NavLink>
                     <NavLink to="/about-us" className="app-navbar__link">About-Us</NavLink>
-                    <button onClick={onLogout} className="app-navbar__logout">Logout</button>
+                    {user ? (
+                        <button onClick={onLogout} className="app-navbar__logout">Logout</button>
+                    ) : (
+                        <button onClick={() => navigate("/login")} className="app-navbar__logout">Login</button>
+                    )}
                 </nav>
             </div>
         </header>

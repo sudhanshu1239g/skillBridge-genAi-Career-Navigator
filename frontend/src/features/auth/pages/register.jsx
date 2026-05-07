@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
+import TopNavbar from '../../interview/components/TopNavbar'
 
 const Register = () => {
 
@@ -29,45 +30,48 @@ const Register = () => {
 
 
     return (
-        <main className="auth-layout">
-            <div className="glow-orb"></div>
-            <div className="brand-section">
-                <h1>SkillBridge</h1>
-                <p>Ai career navigation</p>
-            </div>
-            <div className="form-section">
-            <div className="form-container">
-                <h1>Register</h1>
+        <>
+            <TopNavbar />
+            <main className="auth-layout">
+                <div className="glow-orb"></div>
+                <div className="brand-section">
+                    <h1>SkillBridge</h1>
+                    <p>Ai career navigation</p>
+                </div>
+                <div className="form-section">
+                <div className="form-container">
+                    <h1>Register</h1>
 
-                <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit}>
 
-                    <div className="input-group">
-                        <label htmlFor="username">Username</label>
-                        <input
-                            onChange={(e) => { setUsername(e.target.value) }}
-                            type="text" id="username" name='username' placeholder='Enter username' />
-                    </div>
-                    <div className="input-group">
-                        <label htmlFor="email">Email</label>
-                        <input
-                            onChange={(e) => { setEmail(e.target.value) }}
-                            type="email" id="email" name='email' placeholder='Enter email address' />
-                    </div>
-                    <div className="input-group">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            onChange={(e) => { setPassword(e.target.value) }}
-                            type="password" id="password" name='password' placeholder='Enter password' />
-                    </div>
+                        <div className="input-group">
+                            <label htmlFor="username">Username</label>
+                            <input
+                                onChange={(e) => { setUsername(e.target.value) }}
+                                type="text" id="username" name='username' placeholder='Enter username' />
+                        </div>
+                        <div className="input-group">
+                            <label htmlFor="email">Email</label>
+                            <input
+                                onChange={(e) => { setEmail(e.target.value) }}
+                                type="email" id="email" name='email' placeholder='Enter email address' />
+                        </div>
+                        <div className="input-group">
+                            <label htmlFor="password">Password</label>
+                            <input
+                                onChange={(e) => { setPassword(e.target.value) }}
+                                type="password" id="password" name='password' placeholder='Enter password' />
+                        </div>
 
-                    <button className='button primary-button' >Register</button>
+                        <button className='button primary-button' >Register</button>
 
-                </form>
+                    </form>
 
-                <p>Already have an account? <Link to={"/login"} >Login</Link> </p>
-            </div>
-            </div>
-        </main>
+                    <p>Already have an account? <Link to={"/login"} >Login</Link> </p>
+                </div>
+                </div>
+            </main>
+        </>
     )
 }
 

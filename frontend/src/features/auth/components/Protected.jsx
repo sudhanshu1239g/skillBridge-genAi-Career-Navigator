@@ -3,11 +3,11 @@ import { Navigate, useLocation } from "react-router";
 import React from 'react'
 
 const Protected = ({children}) => {
-    const { loading,user } = useAuth()
+    const { loading, hasCheckedAuth, user } = useAuth()
     const location = useLocation()
 
 
-    if (loading) {
+    if (loading || !hasCheckedAuth) {
         return (
             <main className='loading-screen'>
                 <h1>Loading...</h1>

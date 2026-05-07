@@ -3,6 +3,7 @@ import { AuthContext } from "../auth.context";
 import { login, register, logout, getMe } from "../services/auth.api";
 import { useLocation } from "react-router";
 
+const PUBLIC_ROUTES = ["/", "/full-list", "/about-us", "/login", "/register"];
 
 
 export const useAuth = () => {
@@ -18,7 +19,7 @@ export const useAuth = () => {
             const data = await login({ email, password })
             setUser(data.user)
             return data
-        } catch (err) {
+        } catch {
             return null
         } finally {
             setLoading(false)
@@ -31,7 +32,7 @@ export const useAuth = () => {
             const data = await register({ username, email, password })
             setUser(data.user)
             return data
-        } catch (err) {
+        } catch {
             return null
         } finally {
             setLoading(false)
@@ -43,7 +44,7 @@ export const useAuth = () => {
         try {
             await logout()
             setUser(null)
-        } catch (err) {
+        } catch {
             setUser(null)
         } finally {
             setLoading(false)
@@ -51,24 +52,33 @@ export const useAuth = () => {
     }
 
     useEffect(() => {
-        const publicRoutes = ["/login", "/register"]
         if (hasCheckedAuth) {
-            if (loading) setLoading(false)
+            if (!PUBLIC_ROUTES.includes(location.pathname) && !user) {
+                setHasCheckedAuth(false)
+                return
+            }
             return
         }
 
-        if (publicRoutes.includes(location.pathname)) {
+        if (PUBLIC_ROUTES.includes(location.pathname)) {
             setHasCheckedAuth(true)
             setLoading(false)
             return
         }
 
+        if (user) {
+            setHasCheckedAuth(true)
+            setLoading(false)
+            return
+        }
+
+        setLoading(true)
+
         const getAndSetUser = async () => {
             try {
                 const data = await getMe()
                 setUser(data.user)
-            } catch (err) {
-                // 401 on first load without a session is expected.
+            } catch {
                 setUser(null)
             } finally {
                 setHasCheckedAuth(true)
@@ -78,7 +88,7 @@ export const useAuth = () => {
 
         getAndSetUser()
 
-    }, [hasCheckedAuth, loading, location.pathname, setHasCheckedAuth, setLoading, setUser])
+    }, [hasCheckedAuth, location.pathname, setHasCheckedAuth, setLoading, setUser])
 
-    return { user, loading, handleRegister, handleLogin, handleLogout }
+    return { user, loading, hasCheckedAuth, handleRegister, handleLogin, handleLogout }
 }

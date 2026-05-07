@@ -7,16 +7,16 @@ import child from '../../../assets/child.png'
 
 const FullList = () => {
   const navigate = useNavigate()
-  const { user, loading: authLoading } = useAuth()
+  const { user, hasCheckedAuth } = useAuth()
   const { loading, reports, getReports } = useInterview()
 
   useEffect(() => {
-    if (user) {
+    if (hasCheckedAuth && user) {
       getReports()
     }
-  }, [getReports, user])
+  }, [getReports, hasCheckedAuth, user])
 
-  if (loading || authLoading) {
+  if (loading || !hasCheckedAuth) {
     return (
       <main className='loading-screen'>
         <h1>Loading your interview plan...</h1>
